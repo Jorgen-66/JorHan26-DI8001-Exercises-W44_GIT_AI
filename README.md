@@ -149,7 +149,6 @@ of the stated classroom rule, not certification of a forensic tool.
 
 Prompt 3 response about the overstated claim (keep the actual response):
 
-> Unsupported parts (≤100 words):
 
 “Belongs to the attacker” — the logs record an account name (analyst01) and an IP, not a person, and nothing supplied shows an intrusion occurred. “Proves this person stole evidence” — the record shows three successful DOWNLOAD events (F001, F002, F003, 5,509,120 bytes) in session S-104 after login A005; file contents, destination, transfer completion and authorisation are not in evidence, and the activity may be legitimate. “Hashes prove the logs are authentic and complete” — a matching SHA-256 shows the CSVs are byte-identical to the supplied manifest baseline only; 9 rows were rejected and clock accuracy is unverified.
 
