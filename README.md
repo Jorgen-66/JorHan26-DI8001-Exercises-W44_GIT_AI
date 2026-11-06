@@ -76,9 +76,9 @@ with this supplied baseline; it does not establish authenticity or completeness.
 
 | Success ID | Account | Session | Supporting failure IDs | Download IDs | Event count | Total bytes |
 | --- | --- | --- | --- | --- | --- | --- |
-| A005 | analyst01 | S-104 | A002, A003, A003, A004 |F001,F001,F002,F003 |9 |10752000 |
-| A018 | analyst02 | S-304 | A015, A016, A017 |F013,F014 |6 |2002048 |
-| A014 | backup_svc | S-204 | A011, A012, A013 |F011,F012 |5 |8192 (Fail) |
+| A005 | analyst01 | S-104 | A002, A003, A003, A004 |F001,F002,F003 |3 |5509120 |
+| A018 | analyst02 | S-304 | A015, A016, A017 |F013 |1 |2048 |
+| A014 | backup_svc | S-204 | A011, A012, A013 |- |5 |0 |
 
 
 ## Manual evidence check -- do this without asking AI to count for you
@@ -91,10 +91,10 @@ original timestamps and UTC equivalents. Add rows as needed.
 | --- | --- | --- | --- |
 | auth_log.csv A002 |2026-10-20T08:58:00Z |2026-10-20T08:58:00Z | FAIL, analyst01, 203.0.113.44, DF-PORTAL01 |
 | auth_log.csv A003 |2026-10-20T09:00:00Z |2026-10-20T09:00:00Z | FAIL (first of two identical copies) |
-| auth_log.csv A004 |2026-10-20T10:01:00+01:00 |2026-10-20T09:01:00 | FAIL, +01:00 offset |
+| auth_log.csv A004 |2026-10-20T10:01:00+01:00 |2026-10-20T09:01:00Z | FAIL, +01:00 offset |
 | auth_log.csv A005 |2026-10-20T09:03:00Z |2026-10-20T09:03:00Z | SUCCESS, session S-104 |
 | file_log.csv F001 |2026-10-20T09:05:00Z |2026-10-20T09:05:00Z | DOWNLOAD evidence_export.zip, 5242880 bytes |
-| file_log.csv F002 |2026-10-20T10:07:00+01:00 |2026-10-20T09:07:00 | DOWNLOAD interview_notes.pdf, 262144 bytes |
+| file_log.csv F002 |2026-10-20T10:07:00+01:00 |2026-10-20T09:07:00Z | DOWNLOAD interview_notes.pdf, 262144 bytes |
 | file_log.csv F003 |2026-10-20T09:13:00Z |2026-10-20T09:13:00Z | DOWNLOAD hashes.txt, 4096 bytes |
 
 
@@ -158,11 +158,7 @@ Session S-104 (login A005 at 09:03:00Z, preceded by failures A002–A004) has th
 
 One claim we corrected or independently verified, with event IDs:
 
-Recorded activity: session S-104 is the leading flagged session. Login A005 (analyst01, 203.0.113.44, DF-PORTAL01) succeeded at 09:03:00Z after three failures from the same account, address and host within the preceding five minutes (A002 08:58:00Z, A003 09:00:00Z, A004 09:01:00Z). Within the following ten minutes the file log records three successful DOWNLOAD events in S-104: F001 (09:05:00Z, 5,242,880 bytes), F002 (09:07:00Z, 262,144 bytes) and F003 (09:13:00Z, 4,096 bytes), totalling 5,509,120 bytes. By comparison, session S-304 (A018, analyst02, failures A015–A017) shows one download, F013, of 2,048 bytes, and S-204 (A014, backup_svc) shows none. S-104 is prioritised on recorded volume, not on any conclusion about intent.
-
-Inference and limits: the pattern is consistent with, but does not prove, unauthorised access. A benign explanation is an authorised user mistyping a password and then retrieving case files as part of normal work. Two limitations: nine malformed rows were excluded (five auth, four file), so counts are a lower bound; and clock alignment is unverified—F008 records a download in S-104 one second before A005. The hash check and all 21 supplied checks passed on 2026-11-04; this confirms consistency with the supplied baseline only.
-
-Next evidence requests: the portal’s original authentication and transfer logs for 08:55–09:15Z, and network or endpoint records showing whether F001–F003 completed and to where.
+Verified the S-104 byte total by hand: F001 5,242,880 + F002 262,144 + F003 4,096 = 5,509,120, matching summary.json. Also corrected the first failure list for A005 — A006 (different IP) and A007 (different host) were wrongly included; A003 (duplicated row).
 
 
 Final 180-220 word finding, reviewed and edited by the pair:
